@@ -1,0 +1,73 @@
+[
+    {
+        "_id": "1",
+        "name": "Ballon",
+        "description": "Ballon de football",
+        "prix": 20,
+        "quantity": 50
+    },
+    {
+        "_id": "2",
+        "name": "Chasuble",
+        "description": "Chasuble de couleur",
+        "prix": 15,
+        "quantity": 20
+    },
+    {
+        "_id": "3",
+        "name": "Maillot",
+        "description": "Maillot de football",
+        "prix": 65,
+        "quantity": 30
+    },
+    {
+        "_id": "4",
+        "name": "Short",
+        "description": "Short de football",
+        "prix": 36,
+        "quantity": 30
+    },
+    {
+        "_id": "5",
+        "name": "Crampons",
+        "description": "Crampons de football",
+        "prix": 150,
+        "quantity": 50
+    },
+    {
+        "_id": "6",
+        "name": "Gants de gardien",
+        "description": "Gants de gardien de but",
+        "prix": 66,
+        "quantity": 25
+    },
+    {
+        "_id": "7",
+        "name": "Filet de but",
+        "description": "Filet de but pour l'entraînement",
+        "prix": 200,
+        "quantity": 10
+    },
+    {
+        "_id": "8",
+        "name": "Protège-tibias",
+        "description": "Protège-tibias pour la sécurité",
+        "prix": 27,
+        "quantity": 30
+    },
+    {
+        "_id": "9",
+        "name": "Sifflet d'arbitre",
+        "description": "Sifflet d'arbitre professionnel",
+        "prix": 7,
+        "quantity": 100
+    },
+    {
+        "_id": "10",
+        "name": "Gourde",
+        "description": "Gourde de football",
+        "prix": 12,
+        "quantity": 60
+    }
+  ]
+  
