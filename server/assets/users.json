@@ -1,6 +1,6 @@
 [
     {
-        "_id": "1",
+        "id": "1",
         "firstName": "Adrien",
         "lastName": "MANFREDI",
         "phone": "1234567890",
@@ -9,7 +9,7 @@
         "isAdmin": true
       },
       {
-        "_id": "2",
+        "id": "2",
         "firstName": "Clément",
         "lastName": "DEQUATRE",
         "phone": "1114567890",
@@ -18,8 +18,8 @@
         "isAdmin": true
       },
     {
-      "_id": "3",
-      "firstName": "Thép",
+      "id": "3",
+      "firstName": "Théo",
       "lastName": "DUPONT",
       "phone": "1234567999",
       "email": "john@gmail.com",
@@ -27,7 +27,7 @@
       "isAdmin": false
     },
     {
-      "_id": "4",
+      "id": "4",
       "firstName": "Xavier",
       "lastName": "DURAND",
       "phone": "9876543210",
