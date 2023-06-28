@@ -5,7 +5,8 @@
         "lastName": "MANFREDI",
         "phone": "1234567890",
         "email": "a.manfredi@ecole-ipssi.net",
-        "password": "mdpAdrien"
+        "password": "mdpAdrien",
+        "isAdmin": true
       },
       {
         "_id": "2",
@@ -13,7 +14,8 @@
         "lastName": "DEQUATRE",
         "phone": "1114567890",
         "email": "c.dequtre@ecole-ipssi.net",
-        "password": "mdpClement"
+        "password": "mdpClement",
+        "isAdmin": true
       },
     {
       "_id": "3",
@@ -21,7 +23,8 @@
       "lastName": "DUPONT",
       "phone": "1234567999",
       "email": "john@gmail.com",
-      "password": "mdpTheo"
+      "password": "mdpTheo",
+      "isAdmin": false
     },
     {
       "_id": "4",
@@ -29,7 +32,8 @@
       "lastName": "DURAND",
       "phone": "9876543210",
       "email": "xavier@gmail.com",
-      "password": "mdpXavier"
+      "password": "mdpXavier",
+      "isAdmin": false
     }
   ]
   
