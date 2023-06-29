@@ -1,6 +1,5 @@
 [
     {
-        "id": "1",
         "firstName": "Adrien",
         "lastName": "MANFREDI",
         "phone": "1234567890",
@@ -9,7 +8,6 @@
         "isAdmin": true
       },
       {
-        "id": "2",
         "firstName": "Clément",
         "lastName": "DEQUATRE",
         "phone": "1114567890",
@@ -18,7 +16,6 @@
         "isAdmin": true
       },
     {
-      "id": "3",
       "firstName": "Théo",
       "lastName": "DUPONT",
       "phone": "1234567999",
@@ -27,7 +24,6 @@
       "isAdmin": false
     },
     {
-      "id": "4",
       "firstName": "Xavier",
       "lastName": "DURAND",
       "phone": "9876543210",
