@@ -6,7 +6,7 @@ export default function Product({product, addToCart}) {
             <h4>Pour {product.prix} €</h4>
             <h5>Il en reste {product.quantity}</h5>
             <p>{product.description}</p>
-            <button onClick={() => addToCart(product)}>Ajouter au panier</button>
+            <button disabled={product.quantity === 0} onClick={() => addToCart(product)}>Ajouter au panier</button>
         </div>
     )
 }

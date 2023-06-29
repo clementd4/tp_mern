@@ -80,7 +80,7 @@ export default function PageProducts() {
             <Row >
                 {
                     filteredProducts.map(product => (
-                        <Col key={product.id} md="6" sm="5" className='p-3'>
+                        <Col key={product._id} md="6" sm="5" className='p-3'>
                             <Product product={product} addToCart={addToCart}/>
                         </Col>
                     ))

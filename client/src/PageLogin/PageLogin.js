@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Image, Button } from "react-bootstrap";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { Link, Navigate } from "react-router-dom";
 
 export default function PageLogin({ inscription }) {
     const [mail, setMail] = useState('');
@@ -12,13 +13,19 @@ export default function PageLogin({ inscription }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [verifyPassword, setVerifyPassword] = useState('');
 
+    try {
+        const token = new Cookies().get('token')["access_token"]
+        if (token) {
+            return <Navigate replace to="/products" />;
+        }
+    } catch {
+
+    }
+    
+
     function login() {
         axios.post('http://localhost:5000/login', { email: mail, password: password })
-            .then(t => {
-                setCookie(t.data);
-                const token = new Cookies().get('token')["access_token"];
-                axios.get('http://localhost:5000/test', { headers: { "x-auth-token": token } }).catch(err => console.log(err));
-            })
+            .then(t => {setCookie(t.data); window.location = "/products";})
             .catch(err => { alert("erreur login"); window.location = "/" });
     }
 
@@ -26,7 +33,7 @@ export default function PageLogin({ inscription }) {
         const cookies = new Cookies();
         cookies.set('token', token, { path: '/', maxAge: 3600 * 24 * 10 })
     }
-    // TODO verification
+    // TODO validation
 
     function signup() {
         if (password !== verifyPassword) {
@@ -43,7 +50,7 @@ export default function PageLogin({ inscription }) {
         }
 
         axios.post('http://localhost:5000/signup', body)
-            .then(token => { setCookie(token.data); window.location = "/" })
+            .then(token => { setCookie(token.data); window.location = "/products" })
             .catch(_ => { alert("erreur inscription"); window.location = "/" });
     }
 
@@ -69,7 +76,11 @@ export default function PageLogin({ inscription }) {
                 <input value={verifyPassword} onChange={e => setVerifyPassword(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="password" placeholder="Verification mot de passe"></input>
             }
 
-            <Button onClick={() => inscription ? signup() : login()} variant="primary" style={{ borderRadius: "0 0 10px 10px", boxShadow: "1px 1px 1px gray" }}>Connexion</Button>
+            <Button onClick={() => inscription ? signup() : login()} variant="primary" style={{ borderRadius: "0 0 10px 10px", boxShadow: "1px 1px 1px gray" }}>{inscription ? "Créer le compte" : "Connexion"} </Button>
+
+            {
+                !inscription && <Link to="/signup" className="mt-3"><h6>Créer un compte</h6></Link>
+            }
         </div>
     );
 }
