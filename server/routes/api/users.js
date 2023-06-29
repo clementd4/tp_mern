@@ -1,17 +1,12 @@
 const express = require('express')
 const router = express.Router();
-
 const Users = require('../../models/Users');
-
-router.get('/test', (req, res) => res.send('book route testing!'));
 
 router.get('/', (req, res) => {
     Users.find()
         .then(user => res.json(user))
         .catch(err => res.status(404).json({noUserFound: 'Pas d utilisateurs trouvées...'}));
 });
-
-
 
 router.get('/:id', (req, res) => {
     Users.findById(req.params.id)
@@ -21,7 +16,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req,res) => {
     Users.create(req.body)
-        .then(user => res.json({msg : 'Utilisateur ajoutée ! '}))
+        .then(user => {res.json(user)})
         .catch(err => res.status(400).json({error: 'Impossible d ajouter l utilisateur'}))
 });
 

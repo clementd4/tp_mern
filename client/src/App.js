@@ -2,12 +2,13 @@ import './App.css';
 
 import PageProducts from './PageProducts/PageProducts';
 import PageLogin from './PageLogin/PageLogin';
+import PageAdminUsers from './PageAdminUsers/PageAdminUsers';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <PageProducts inscription={true}/>
+        <PageLogin inscription={false}/>
       </header>
     </div>
   );
