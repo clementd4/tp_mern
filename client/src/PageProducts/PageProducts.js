@@ -2,73 +2,93 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Row, Col, Container } from 'react-bootstrap';
 
 import Product from "./Product";
+import Panier from './Panier';
 import { useEffect, useState } from 'react';
 
 export default function PageProducts() {
-    const dummy_product = [
-        {
-            id: 1,
-            name: "Running Shoes",
-            price: 99.99,
-            quantity: 10,
-            description: "High-performance running shoes with excellent cushioning and support.",
-        },
-        {
-            id: 2,
-            name: "Tennis Racket",
-            price: 79.99,
-            quantity: 5,
-            description: "A lightweight and durable tennis racket for players of all levels.",
-        },
-        {
-            id: 3,
-            name: "Basketball",
-            price: 29.99,
-            quantity: 15,
-            description: "Official size basketball made from high-quality materials for optimal grip and performance.",
-        },
-        {
-            id: 4,
-            name: "Yoga Mat",
-            price: 24.99,
-            quantity: 20,
-            description: "A non-slip yoga mat with extra thickness for enhanced comfort during yoga and fitness exercises.",
-        },
-        {
-            id: 5,
-            name: "Cycling Helmet",
-            price: 49.99,
-            quantity: 8,
-            description: "A lightweight and aerodynamic helmet designed to provide maximum protection for cyclists.",
-        }
-    ];
-    // TODO jwt documentaion
 
-    const [products, setProducts] = useState(dummy_product);
-
+    const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
+    //panier
+    const [cart, setCart] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
-        setProducts(dummy_product.filter((p) => p.name.toLowerCase().search(search.toLowerCase()) !== -1))
-    }, [search]);
+        fetchProducts();
+      }, []);
+
+      useEffect(() => {
+        calculateTotalPrice();
+      }, [cart]);
+    
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/product/');
+          const data = await response.json();
+          setProducts(data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des produits:', error);
+        }
+      };
+
+      const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(search.toLowerCase())
+      );
+
+      //Panier
+      const addToCart = (product) => {
+        setCart([...cart, product]);
+      };
+
+      const removeFromCart = (productId) => {
+        const updatedCart = cart.filter((product) => product._id !== productId);
+        setCart(updatedCart);
+      };
+
+    const confirmCart = async () => {
+        try {
+        for (const product of cart) {
+            const updatedQuantity = product.quantity - 1;
+
+            await fetch(`http://localhost:5000/api/product/${product._id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ quantity: updatedQuantity }),
+            });
+        }
+
+        setCart([]);
+        setTotalPrice(0);
+        alert('Le panier a été confirmé avec succès!');
+        } catch (error) {
+        console.error('Erreur lors de la confirmation du panier:', error);
+        }
+    };
+
+    const calculateTotalPrice = () => {
+        const totalPrice = cart.reduce((sum, product) => sum + product.prix, 0);
+        setTotalPrice(totalPrice);
+      };
 
     return (
         <>
-            <input className="px-3" value={search} onChange={e => setSearch(e.target.value)} style={{ border: 0, borderRadius: "0 0 10px 10px", outline: 'none', boxShadow: "1px 1px 1px gray" }}></input>
+            <input className="px-3" value={search} onChange={e => setSearch(e.target.value)} style={{ border: 0, borderRadius: "0 0 10px 10px", outline: 'none', boxShadow: "1px 1px 1px gray" }} placeholder="Rechercher un produit"></input>
 
             <Container>
             <Row >
                 {
-                    products.map(product => {
-                        return (
+                    filteredProducts.map(product => (
                         <Col key={product.id} md="6" sm="5" className='p-3'>
-                            <Product product={product} />
+                            <Product product={product} addToCart={addToCart}/>
                         </Col>
-                        )
-                    })
+                    ))
                 }
             </Row>
         </Container>
+
+        <Panier cart={cart} totalPrice={totalPrice} removeFromCart={removeFromCart} confirmCart={confirmCart} />  {/*Mettre l'affichage dans une autre route, navBar */}
         </>
 
         
