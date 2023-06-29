@@ -1,29 +1,42 @@
 require("dotenv").config();
 var jwt = require("jsonwebtoken");
 
+const model_users = require('../models/Users');
+
+async function findUserByEmail(email) {
+  try {
+      return await model_users.find({ email: email });
+  } catch (err) {
+      console.log(err);
+      return null;
+  }
+}
+
 module.exports = {
   auth: (req, res, next) => {
     const token = req.header("x-auth-token");
     if (!token) {
-      res.status(401).json("token not found");
+      return res.status(401).json("token not found");
     }
     try {
       const user = jwt.verify(token, process.env.TOKEN_SECRET);
-      req.user = user.email;
       next();
     } catch (error) {
       res.status(401).json("invalid token");
     }
   },
 
-  authAdmin: (req, res, next) => {
+  authAdmin: async (req, res, next) => {
     const token = req.header("x-auth-token");
     if (!token) {
-      res.status(401).json("token not found");
+      return res.status(401).json("token not found");
     }
     try {
       const user = jwt.verify(token, process.env.TOKEN_SECRET);
-      req.user = user.email;
+      const foundUser = await findUserByEmail(user.email);
+      if (!(foundUser && foundUser[0].isAdmin)) {
+        return res.status(401).json("token not found");
+      }
       next();
     } catch (error) {
       res.status(401).json("invalid token");

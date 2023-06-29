@@ -62,13 +62,12 @@ app.post('/login', async (req, res) => {
 
     const access_token = generateAccessToken({email: req.body.email});
 
-    return res.status(200).json({access_token: access_token, isAdmin: existingUser[0].isAdmin})
+    return res.status(200).json({access_token: access_token, isAdmin: existingUser[0].isAdmin || false})
 });
 
-const {auth, authAdmin} = require('./authentication/auth')
 
 app.use('/api/product', Product)
-app.use('/api/users', authAdmin, Users)
+app.use('/api/users', Users)
 
 app.listen(5000, () => {
     console.log("http://localhost:5000");

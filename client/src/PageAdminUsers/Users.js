@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { ToggleButton, Button, Col, Container, Row } from "react-bootstrap";
-import Cookies from "universal-cookie";
 
 export default function User({ user, removeUserUi, ajoutUserUi, admin}) {
     const [firstname, setFirstname] = useState(user.firstName);
@@ -19,7 +18,7 @@ export default function User({ user, removeUserUi, ajoutUserUi, admin}) {
             .catch(err => alert("erreur suppression utilisateur"))
     }
 
-    function saveUser() {
+    async function saveUser() {
         const body = {
             firstName: firstname,
             lastName: lastName,
@@ -42,9 +41,15 @@ export default function User({ user, removeUserUi, ajoutUserUi, admin}) {
                 })
                 .catch(err => alert("erreur ajout utilisateur"))
         } else {
-            axios.put(`http://localhost:5000/api/users/${user._id}`, body)
-                .then(_ => setModeModification(false))
-                .catch(err => alert("erreur modification utilisateur"))
+            const new_user = await axios.put(`http://localhost:5000/api/users/${user._id}`, body)
+            console.log(new_user);
+            setFirstname(body.firstName);
+            setLastName(body.lastName);
+            setEmail(body.email);
+            setPhone(body.phone);
+            setIsAdmin(body.isAdmin);
+
+            setModeModification(false)
         }
     }
 
@@ -83,15 +88,15 @@ export default function User({ user, removeUserUi, ajoutUserUi, admin}) {
                     <Button className="mt-3" onClick={() => setModeModification(false)} style={{ borderRadius: "10px 0 0 10px" }}>Annuler</Button>
                 }
 
-                <Button className="mt-3" onClick={() => saveUser()} style={ajoutUserUi === undefined ? { borderRadius: "0 10px 10px 0 " } : {}}>{ajoutUserUi !== undefined ? "Ajouter" : "Modifier"}</Button>
+                <Button className="mt-3" onClick={() => saveUser()} style={ajoutUserUi == undefined ? { borderRadius: "0 10px 10px 0 " } : {}}>{ajoutUserUi !== undefined ? "Ajouter" : "Modifier"}</Button>
             </div>
         )
     }
     return (
         <div className='p-3' style={{ backgroundColor: '#C2D9B8', borderRadius: 10, height: "100%" }}>
-            <h3>{user.firstName} {user.lastName}</h3>
-            <h4>{user.email}</h4>
-            <h5>{user.phone}</h5>
+            <h3>{firstname} {lastName}</h3>
+            <h4>{email}</h4>
+            <h5>{phone}</h5>
             <Button onClick={() => removeUser()} style={{ borderRadius: "10px 0 0 10px" }}>Supprimer</Button>
             <Button onClick={() => setModeModification(true)} style={{ borderRadius: "0 10px 10px 0 " }}>Modifier</Button>
         </div>

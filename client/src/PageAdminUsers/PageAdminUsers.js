@@ -46,7 +46,7 @@ export default function PageAdminUsers() {
         <Container className="d-flex" style={{ justifyContent: "space-between" }}>
         <div >
             {
-                (new Cookies().get("isAdmin") == "true") && 
+                (new Cookies().get("isAdmin") === "true") && 
                 <Link to="/products" className="p-3" style={{ textDecoration: 'none', color: "black" }}><Button>Produits</Button></Link>
             }
           <Link to="/" style={{ textDecoration: 'none', color: "black" }} onClick={() => {

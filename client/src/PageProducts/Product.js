@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Col, Container, Button, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import axios from "axios";
 import getToken from "../auth";
 
@@ -39,7 +39,6 @@ export default function Product({ product, addToCart, ajoutProductUi, canModify,
         axios.delete(`http://localhost:5000/api/product/${product._id}`)
             .catch(err => alert("erreur suppression produit"))
     }
-
 
     if (modifyMode) {
         return (
@@ -81,7 +80,7 @@ export default function Product({ product, addToCart, ajoutProductUi, canModify,
             <h4>Pour {p.prix} €</h4>
             <h5>Il en reste {p.quantity}</h5>
             <p>{p.description}</p>
-            <button disabled={p.quantity === 0} onClick={() => addToCart(p)}>Ajouter au panier</button>
+            <button disabled={p.quantity == 0} onClick={() => addToCart(p)}>Ajouter au panier</button>
             {
                 canModify &&
                     <button onClick={() => setModifyMode(true)}>Modifier</button>                

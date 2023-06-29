@@ -42,6 +42,14 @@ export default function PageProducts() {
 
   //Panier
   const addToCart = (product) => {
+    const index = products.indexOf(product);
+    if (index === -1) {
+      console.log(product);
+    } else {
+      products[index].quantity -= 1;
+      setProducts([...products]);
+    }
+
     setCart([...cart, product]);
   };
 
@@ -53,11 +61,10 @@ export default function PageProducts() {
   const confirmCart = async () => {
     try {
       for (const product of cart) {
-        const updatedQuantity = product.quantity - 1;
+        const updatedQuantity = product.quantity;
 
         await axios.put(`http://localhost:5000/api/product/${product._id}`, { quantity: updatedQuantity });
       }
-
       setCart([]);
       setTotalPrice(0);
       alert('Le panier a été confirmé avec succès!');
@@ -93,8 +100,8 @@ export default function PageProducts() {
       <Container className="d-flex" style={{ justifyContent: "space-between" }}>
         <div >
           {
-            isAdmin && 
-            <Link to="/users" className="p-3" style={{ textDecoration: 'none', color: "black" }}><Button>Utilisateur</Button></Link>
+            isAdmin &&
+            <Link to="/users" className="p-3" style={{ textDecoration: 'none', color: "black" }}><Button>Utilisateurs</Button></Link>
 
           }
           <Link to="/" style={{ textDecoration: 'none', color: "black" }} onClick={() => {
