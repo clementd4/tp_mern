@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const Users = require('../../models/Users');
-
+const bcrypt = require('bcrypt')
 router.get('/', (req, res) => {
     Users.find()
         .then(user => res.json(user))
@@ -15,6 +15,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req,res) => {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
     Users.create(req.body)
         .then(user => {res.json(user)})
         .catch(err => res.status(400).json({error: 'Impossible d ajouter l utilisateur'}))
@@ -22,6 +23,7 @@ router.post('/', (req,res) => {
 
 
 router.put('/:id', (req, res) => {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
     Users.findByIdAndUpdate(req.params.id, req.body)
         .then(user => res.json('Mise à jour effectuée !'))
         .catch(err => res.status(404).json({error: 'Impossible de mettre à jour'}));

@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Col, Row, Container } from 'react-bootstrap';
+import { Col, Row, Container, Button } from 'react-bootstrap';
 import User from './Users';
+import getToken from '../auth';
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
+axios.defaults.headers.common['x-auth-token'] = getToken();
 
 export default function PageAdminUsers() {
     const [users, setUsers] = useState([]);
@@ -10,7 +15,7 @@ export default function PageAdminUsers() {
     useEffect(() => {
         axios.get('http://localhost:5000/api/users')
             .then((users) => { setUsers(users.data) })
-            .catch(err => alert(err));
+            .catch(err => console.log(err));
     }, []);
 
     function removeUserUi(id) {
@@ -38,18 +43,30 @@ export default function PageAdminUsers() {
 
     return (
         <>
+        <Container className="d-flex" style={{ justifyContent: "space-between" }}>
+        <div >
+            {
+                (new Cookies().get("isAdmin") == "true") && 
+                <Link to="/products" className="p-3" style={{ textDecoration: 'none', color: "black" }}><Button>Produits</Button></Link>
+            }
+          <Link to="/" style={{ textDecoration: 'none', color: "black" }} onClick={() => {
+            const allCookies = new Cookies().getAll();
+            Object.keys(allCookies).forEach((cookieName) => {
+              new Cookies().remove(cookieName);
+            });
+          }}><Button>Déconnection</Button></Link>
+        </div>
+        <input className="px-3" value={search} onChange={(e) => setSearch(e.target.value)} style={{ border: 0, borderRadius: "0 0 10px 10px", outline: 'none', boxShadow: "1px 1px 1px gray" }} placeholder="Rechercher un utilisateur"></input>
+      </Container>
+
             <Container>
-                <Row>
-                    <Col>
-                        <input type="text" placeholder="Rechercher un utilisateur" value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </Col>
-                </Row>
+             
                 <Row>
                     {
                         filteredUsers.map(user => {
                             return (
                                 <Col key={user._id} md="6" sm="5" className='p-3'>
-                                    <User user={user} removeUserUi={removeUserUi} />
+                                    <User user={user} removeUserUi={removeUserUi} admin={user.isAdmin}/>
                                 </Col>
                             )
                         })

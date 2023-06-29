@@ -1,14 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
 import { ToggleButton, Button, Col, Container, Row } from "react-bootstrap";
+import Cookies from "universal-cookie";
 
-export default function User({ user, removeUserUi, ajoutUserUi }) {
+export default function User({ user, removeUserUi, ajoutUserUi, admin}) {
     const [firstname, setFirstname] = useState(user.firstName);
     const [lastName, setLastName] = useState(user.lastName);
     const [email, setEmail] = useState(user.email);
     const [phone, setPhone] = useState(user.phone);
     const [password, setPassword] = useState("");
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(admin);
 
     const [modeModification, setModeModification] = useState(ajoutUserUi !== undefined);
 
@@ -25,6 +26,7 @@ export default function User({ user, removeUserUi, ajoutUserUi }) {
             phone: phone,
             email: email,
             password: password,
+            isAdmin: isAdmin
         }
 
         if (ajoutUserUi !== undefined) {
@@ -36,8 +38,9 @@ export default function User({ user, removeUserUi, ajoutUserUi }) {
                     setEmail('');
                     setPhone('');
                     setPassword('');
+                    setIsAdmin(false);
                 })
-                .catch(err => alert("erreur modification utilisateur"))
+                .catch(err => alert("erreur ajout utilisateur"))
         } else {
             axios.put(`http://localhost:5000/api/users/${user._id}`, body)
                 .then(_ => setModeModification(false))
@@ -48,6 +51,7 @@ export default function User({ user, removeUserUi, ajoutUserUi }) {
     const inputStyleTop = { border: 0, borderRadius: "10px 10px 0 0 ", outline: 'none', boxShadow: "1px 1px 1px gray" }
     const inputStyleMiddle = { border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }
     const inputStyleBottom = { border: 0, outline: 'none', borderRadius: "0 0 10px 10px", boxShadow: "1px 1px 1px gray" }
+    
     if (modeModification) {
         return (
             <div className='p-3' style={{ backgroundColor: '#C2D9B8', borderRadius: 10, height: "100%" }}>
@@ -59,15 +63,14 @@ export default function User({ user, removeUserUi, ajoutUserUi }) {
                             <input style={inputStyleMiddle} type="text" placeholder="Nom" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                             <input style={inputStyleMiddle} type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             <input style={inputStyleMiddle} type="text" placeholder="Telephone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                            <input style={inputStyleBottom} type="text" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <input style={inputStyleBottom} type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} />
                             <ToggleButton
                                 className="mt-2"
-                                id="toggle-check"
                                 type="checkbox"
                                 variant="outline-primary"
                                 checked={isAdmin}
                                 value={isAdmin}
-                                onChange={(e) => setIsAdmin(!isAdmin)}
+                                onClick={(e) => setIsAdmin(!isAdmin)}
                             >
                                 {isAdmin ? "Administrateur" : "Utilisateur"}
                             </ToggleButton>

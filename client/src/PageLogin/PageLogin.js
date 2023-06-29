@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Image, Button } from "react-bootstrap";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import getToken from '../auth'
+
 import { Link, Navigate } from "react-router-dom";
 
 export default function PageLogin({ inscription }) {
@@ -14,7 +16,7 @@ export default function PageLogin({ inscription }) {
     const [verifyPassword, setVerifyPassword] = useState('');
 
     try {
-        const token = new Cookies().get('token')["access_token"]
+        const token = getToken();
         if (token) {
             return <Navigate replace to="/products" />;
         }
@@ -22,17 +24,21 @@ export default function PageLogin({ inscription }) {
 
     }
     
+    function setCookie(name, token) {
+        const cookies = new Cookies();
+        cookies.set(name, token, { path: '/', maxAge: 3600 * 24 * 10 })
+    }
 
     function login() {
         axios.post('http://localhost:5000/login', { email: mail, password: password })
-            .then(t => {setCookie(t.data); window.location = "/products";})
-            .catch(err => { alert("erreur login"); window.location = "/" });
+            .then(t => {
+                setCookie('token', t.data.access_token); 
+                setCookie('isAdmin', t.data.isAdmin);
+                window.location = "/products";
+            })
+            .catch(err => { alert(err); window.location = "/" });
     }
 
-    function setCookie(token) {
-        const cookies = new Cookies();
-        cookies.set('token', token, { path: '/', maxAge: 3600 * 24 * 10 })
-    }
     // TODO validation
 
     function signup() {
@@ -50,7 +56,11 @@ export default function PageLogin({ inscription }) {
         }
 
         axios.post('http://localhost:5000/signup', body)
-            .then(token => { setCookie(token.data); window.location = "/products" })
+            .then(token => { 
+                setCookie('token', token.data.access_token); 
+                setCookie('isAdmin', token.data.isAdmin);
+                window.location = "/products" 
+            })
             .catch(_ => { alert("erreur inscription"); window.location = "/" });
     }
 

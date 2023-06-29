@@ -16,8 +16,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-function generateAccessToken(email) {
-    return jwt.sign({email}, process.env.TOKEN_SECRET, { expiresIn: '30d' });
+function generateAccessToken(json) {
+    return jwt.sign(json, process.env.TOKEN_SECRET, { expiresIn: '30d' });
 }
 
 async function findUserByEmail(email) {
@@ -30,8 +30,8 @@ async function findUserByEmail(email) {
 }
 
 app.post('/signup', async (req, res) => {
-    const existingUser = findUserByEmail(req.body.email);
-    if (existingUser === null || existingUser.length === 0) {
+    const existingUser = await findUserByEmail(req.body.email);
+    if (existingUser.length !== 0) {
         return res.status(400).send('Email déja utilisé');
     }
 
@@ -43,14 +43,13 @@ app.post('/signup', async (req, res) => {
         return res.status(500).send('Internal Server Error');
     }
 
-    const access_token = generateAccessToken(req.email);
+    const access_token = generateAccessToken({email: req.body.email, isAdmin: false});
 
     return res.status(200).json({access_token})
 });
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
     const existingUser = await findUserByEmail(email);
     if (existingUser === null || existingUser.length === 0) {
         return res.status(401).send('Email ou mot de passe incorrect');
@@ -61,13 +60,15 @@ app.post('/login', async (req, res) => {
         return res.status(401).send("Mot de passe incorrect")
     }
 
-    const access_token = generateAccessToken(req.email);
+    const access_token = generateAccessToken({email: req.body.email});
 
-    return res.status(200).json({access_token})
+    return res.status(200).json({access_token: access_token, isAdmin: existingUser[0].isAdmin})
 });
 
+const {auth, authAdmin} = require('./authentication/auth')
+
 app.use('/api/product', Product)
-app.use('/api/users', Users)
+app.use('/api/users', authAdmin, Users)
 
 app.listen(5000, () => {
     console.log("http://localhost:5000");
