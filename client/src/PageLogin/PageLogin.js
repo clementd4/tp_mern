@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Image, Button } from "react-bootstrap";
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 export default function PageLogin({ inscription }) {
     const [mail, setMail] = useState('');
@@ -11,16 +13,40 @@ export default function PageLogin({ inscription }) {
     const [verifyPassword, setVerifyPassword] = useState('');
 
     function login() {
-        // bcrypt()
+        axios.post('http://localhost:5000/login', { email: mail, password: password })
+            .then(t => {
+                setCookie(t.data);
+                const token = new Cookies().get('token')["access_token"];
+                axios.get('http://localhost:5000/test', { headers: { "x-auth-token": token } }).catch(err => console.log(err));
+            })
+            .catch(err => { alert("erreur login"); window.location = "/" });
     }
 
+    function setCookie(token) {
+        const cookies = new Cookies();
+        cookies.set('token', token, { path: '/', maxAge: 3600 * 24 * 10 })
+    }
     // TODO verification
 
     function signup() {
+        if (password !== verifyPassword) {
+            alert("Les mots de passe ne sont pas identiques");
+            return;
+        }
 
-        window.location = "/"
+        const body = {
+            firstName: userName,
+            lastName: familyName,
+            phone: phoneNumber,
+            email: mail,
+            password: password,
+        }
+
+        axios.post('http://localhost:5000/signup', body)
+            .then(token => { setCookie(token.data); window.location = "/" })
+            .catch(_ => { alert("erreur inscription"); window.location = "/" });
     }
-    
+
     return (
         <div style={{ display: "flex", flexDirection: "column", backgroundColor: "#C2D9B8", borderRadius: 10, boxShadow: "1px 1px 1px gray" }} className="p-3">
             <Image className="pb-3" rounded src="https://upload.wikimedia.org/wikipedia/fr/3/32/LAF_%28logo%29.svg" width={300} />
@@ -30,9 +56,9 @@ export default function PageLogin({ inscription }) {
             {
                 inscription &&
                 <>
-                    <input value={userName} onChange={e => setUsername(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="password" placeholder="Prénom"></input>
-                    <input value={familyName} onChange={e => setFamilyName(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="password" placeholder="Nom de famille"></input>
-                    <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="password" placeholder="Numéro de téléphone"></input>
+                    <input value={userName} onChange={e => setUsername(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="text" placeholder="Prénom"></input>
+                    <input value={familyName} onChange={e => setFamilyName(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="text" placeholder="Nom"></input>
+                    <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="px-2" style={{ border: 0, outline: 'none', boxShadow: "1px 1px 1px gray" }} type="text" placeholder="Numéro de téléphone"></input>
                 </>
             }
 
